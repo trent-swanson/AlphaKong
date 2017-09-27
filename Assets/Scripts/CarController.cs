@@ -5,18 +5,30 @@ using XboxCtrlrInput;
 
 public class CarController : MonoBehaviour
 {
-    public WheelCollider[] wheelColliders;
-    private float enginePower = 1000.0f;
-    public float power = 0.0f;
-    private float MaxVelocity = 10.0f;
-    public float reverse = 0.0f;
-    public float brake = 0.0f;
-    public float steer = 0.0f;
-    private float maxSteer = 15.0f;
-    private float driftSteer = 35.0f;
+	public XboxController controller;
+	[Space]
+
+	public float enginePower = 100.0f;
+	public float MaxVelocity = 10.0f;
+	public float maxSteer = 15.0f;
+	public float driftSteer = 35.0f;
+	public float acclBrake = 3000.0f;
+	public float declBrake = 3000.0f;
+
+	[HideInInspector]
+	public float power = 0.0f;
+	[HideInInspector]
+	public float reverse = 0.0f;
+	[HideInInspector]
+	public float steer = 0.0f;
+	[HideInInspector]
+	public bool driftbool = false;
+
     private Rigidbody playerBody;
-    public bool driftbool = false;
-    public XboxController controller;
+	private Vector3 localVel;
+
+	[Space]
+	public WheelCollider[] wheelColliders;
 
     // Use this for initialization
     void Start()
@@ -26,24 +38,37 @@ public class CarController : MonoBehaviour
 
     }
 
-    private void Break()
+	private void Break(float breakValue)
     {
-        wheelColliders[0].brakeTorque = brake;
-        wheelColliders[1].brakeTorque = brake;
-        wheelColliders[2].brakeTorque = brake;
-        wheelColliders[3].brakeTorque = brake;
+		wheelColliders[0].motorTorque = 0;
+		wheelColliders[1].motorTorque = 0;
+		wheelColliders[2].motorTorque = 0;
+		wheelColliders[3].motorTorque = 0;
+		wheelColliders[0].brakeTorque = breakValue;
+		wheelColliders[1].brakeTorque = breakValue;
+		wheelColliders[2].brakeTorque = breakValue;
+		wheelColliders[3].brakeTorque = breakValue;
     }
 
     private void Reverse()
     {
-        wheelColliders[0].motorTorque = -reverse * 10;
-        wheelColliders[1].motorTorque = -reverse * 10;
-        wheelColliders[2].motorTorque = -reverse * 10;
-        wheelColliders[3].motorTorque = -reverse * 10;
-        wheelColliders[0].brakeTorque = 0;
-        wheelColliders[1].brakeTorque = 0;
-        wheelColliders[2].brakeTorque = 0;
-        wheelColliders[3].brakeTorque = 0;
+		if (localVel.z > 0)
+		{
+			Debug.Log ("R Breaking");
+			Break(declBrake * reverse);
+			return;
+		}
+		Debug.Log ("Reverse");
+
+		wheelColliders[0].brakeTorque = 0;
+		wheelColliders[1].brakeTorque = 0;
+		wheelColliders[2].brakeTorque = 0;
+		wheelColliders[3].brakeTorque = 0;
+
+        wheelColliders[0].motorTorque = -reverse;
+        wheelColliders[1].motorTorque = -reverse;
+        wheelColliders[2].motorTorque = -reverse;
+        wheelColliders[3].motorTorque = -reverse;
     }
 
     private void Drift()
@@ -73,16 +98,26 @@ public class CarController : MonoBehaviour
 
     private void Accelerate()
     {
+
+		if (localVel.z < 0)
+		{
+			//Debug.Log ("A-Breaking");
+			Break(acclBrake * power);
+			return;
+		}
+		//Debug.Log ("Accelerate");
+
         wheelColliders[0].brakeTorque = 0;
         wheelColliders[1].brakeTorque = 0;
         wheelColliders[2].brakeTorque = 0;
         wheelColliders[3].brakeTorque = 0;
+
         //toggle drift mode
         if (driftbool == true)
         {
             //back 
-            wheelColliders[1].motorTorque = power * 10;
-            wheelColliders[2].motorTorque = power * 10;
+            wheelColliders[1].motorTorque = power;
+            wheelColliders[2].motorTorque = power;
             //front
             wheelColliders[0].motorTorque = 0;
             wheelColliders[3].motorTorque = 0;
@@ -90,45 +125,49 @@ public class CarController : MonoBehaviour
         else
         {
             //front
-            wheelColliders[0].motorTorque = power * 10;
-            wheelColliders[3].motorTorque = power * 10;
+            wheelColliders[0].motorTorque = power;
+            wheelColliders[3].motorTorque = power;
             //back
             wheelColliders[1].motorTorque = 0;
             wheelColliders[2].motorTorque = 0;
         }
     }
 
+
     // Update is called once per frame
     void Update()
     {
         power = XCI.GetAxis(XboxAxis.RightTrigger, controller) * enginePower * Time.deltaTime;
         reverse = XCI.GetAxis(XboxAxis.LeftTrigger, controller) * enginePower * Time.deltaTime;
-        brake = XCI.GetAxis(XboxAxis.LeftTrigger, controller) * 3000;
-        Vector3 localVel = playerBody.transform.InverseTransformDirection(playerBody.velocity);
+		localVel = playerBody.transform.InverseTransformDirection(playerBody.velocity);
 
         //Allows for drift mode
         Drift();
 
-        if (XCI.GetAxis(XboxAxis.RightTrigger, controller) > 0)
-        {
-            if (localVel.z >= 0)
-            {
-                Break();
-            }
-            if (playerBody.velocity.magnitude < MaxVelocity)
-            {
-                Accelerate();
-                return;
-            }
-        }
+		if ((XCI.GetAxis (XboxAxis.LeftTrigger, controller) > 0) & (XCI.GetAxis (XboxAxis.RightTrigger, controller) > 0)) {
+			Break (acclBrake);
+		}
+		else if (XCI.GetAxis (XboxAxis.RightTrigger, controller) > 0) {
+			Accelerate ();
 
-        if (XCI.GetAxis(XboxAxis.LeftTrigger, controller) > 0)
-        {
-            Break();
-            if (localVel.z <= 0)
-            {
-                Reverse();
-            }
-        }
+		}
+		else if (XCI.GetAxis (XboxAxis.LeftTrigger, controller) > 0) {
+			Reverse ();
+
+		}
+		else {
+			wheelColliders[0].motorTorque = 0;
+			wheelColliders[1].motorTorque = 0;
+			wheelColliders[2].motorTorque = 0;
+			wheelColliders[3].motorTorque = 0;
+		}
+
+		/*Debug.Log (localVel.z);
+		if (localVel.z > 20) {
+			localVel.z -= 0.5f;
+		}
+		if (localVel.z < -20) {
+			localVel.z += 0.5f;
+		}*/
     }
 }
