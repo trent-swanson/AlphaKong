@@ -16,6 +16,7 @@ public class CarController : MonoBehaviour
 	public float driftSteer = 35.0f;
 	public float acclBrake = 3000.0f;
 	public float declBrake = 3000.0f;
+	public float playerDrag = 0.5f;
     public float speedMultiplyer = 0.0f;
 
 	//[HideInInspector]
@@ -31,6 +32,7 @@ public class CarController : MonoBehaviour
 	public Vector3 localVel;
 
 	[Space]
+	[Space]
 
 	public WheelCollider[] wheelColliders;
 
@@ -39,8 +41,6 @@ public class CarController : MonoBehaviour
     {
         GetComponent<Rigidbody>().centerOfMass = new Vector3(0.0f, -0.5f, 0.3f);
         playerBody = GetComponent<Rigidbody>();
-        //power *= speedMultiplyer;
-        //reverse *= speedMultiplyer;
     }
 
 	private void Break(float breakValue)
@@ -147,9 +147,21 @@ public class CarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        power = XCI.GetAxis(XboxAxis.RightTrigger, controller) * enginePower * Time.deltaTime;
-        reverse = XCI.GetAxis(XboxAxis.LeftTrigger, controller) * enginePower * Time.deltaTime;
+		power = XCI.GetAxis (XboxAxis.RightTrigger, controller) * (enginePower * speedMultiplyer) * Time.deltaTime;
+		reverse = XCI.GetAxis (XboxAxis.LeftTrigger, controller) * (enginePower * speedMultiplyer) * Time.deltaTime;
 		localVel = playerBody.transform.InverseTransformDirection(playerBody.velocity);
+
+		RaycastHit hit;
+		Ray groundCheck = new Ray(transform.position, Vector3.down);
+		Debug.DrawRay(transform.position, Vector3.down * 0.5f, Color.red);
+		if (Physics.Raycast(groundCheck, out hit, 0.5f))
+		{
+			if (hit.collider.tag == "Ground")
+			{
+				//playerBody.drag = playerDrag;
+				//playerBody.angularDrag = playerDrag;
+			}
+		}
 
         if (localVel.z >= MaxFWVelocity)
         {
@@ -170,17 +182,14 @@ public class CarController : MonoBehaviour
         {
 			Break(acclBrake);
 		}
-
 		else if (XCI.GetAxis (XboxAxis.RightTrigger, controller) > 0)
         {
 			Accelerate();
 		}
-
 		else if (XCI.GetAxis (XboxAxis.LeftTrigger, controller) > 0)
         {
 			Reverse();
 		}
-
         else
         {
             wheelColliders[0].motorTorque = 0;
@@ -188,13 +197,5 @@ public class CarController : MonoBehaviour
             wheelColliders[2].motorTorque = 0;
             wheelColliders[3].motorTorque = 0;
         }
-
-		/*Debug.Log (localVel.z);
-		if (localVel.z > 20) {
-			localVel.z -= 0.5f;
-		}
-		if (localVel.z < -20) {
-			localVel.z += 0.5f;
-		}*/
     }
 }
