@@ -1,3 +1,15 @@
+<<<<<<< .mine
+fileFormatVersion: 2
+guid: 21ab830228b37f843b53de5b684412d2
+timeCreated: 1506913154
+licenseType: Pro
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+||||||| .r0
+=======
 fileFormatVersion: 2
 guid: 78bebe2a138ea09479e1ba7f95688176
 timeCreated: 1506913174
@@ -6,3 +18,4 @@ NativeFormatImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+>>>>>>> .r12

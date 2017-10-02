@@ -1,3 +1,15 @@
+<<<<<<< .mine
+fileFormatVersion: 2
+guid: 0d873ff2bb3a11848b60331fa84992d1
+folderAsset: yes
+timeCreated: 1506913133
+licenseType: Pro
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+||||||| .r0
+=======
 fileFormatVersion: 2
 guid: aa37bd71678646f4eb026460c7e3fde9
 folderAsset: yes
@@ -7,3 +19,4 @@ DefaultImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+>>>>>>> .r12

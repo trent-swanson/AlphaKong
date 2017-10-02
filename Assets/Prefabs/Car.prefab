@@ -224,7 +224,13 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1447728911352810}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+<<<<<<< .mine
+  m_LocalPosition: {x: 2.2826042, y: -4.53, z: -6.3573833}
+||||||| .r11
+  m_LocalPosition: {x: 24.893715, y: 2.850641, z: 7.444166}
+=======
   m_LocalPosition: {x: 24.893715, y: 8.75, z: 7.444166}
+>>>>>>> .r12
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4244201590319120}
@@ -330,7 +336,13 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
+<<<<<<< .mine
+  - {fileID: 2100000, guid: 0e1afd7a0b460c74c8dbe4d129b48da1, type: 2}
+||||||| .r11
+  - {fileID: 2100000, guid: af8935f46ac1d7c4b826c31ee6e39637, type: 2}
+=======
   - {fileID: 2100000, guid: 5d014f70abf28c34da36ef503c7cde5c, type: 2}
+>>>>>>> .r12
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -361,7 +373,13 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
+<<<<<<< .mine
+  - {fileID: 2100000, guid: 0e1afd7a0b460c74c8dbe4d129b48da1, type: 2}
+||||||| .r11
+  - {fileID: 2100000, guid: af8935f46ac1d7c4b826c31ee6e39637, type: 2}
+=======
   - {fileID: 0}
+>>>>>>> .r12
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -392,7 +410,13 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
+<<<<<<< .mine
+  - {fileID: 2100000, guid: 3e48cf119a4e7fe43bde1d88011add35, type: 2}
+||||||| .r11
+  - {fileID: 2100000, guid: 8d6386f3f70c6fb48bc2c7912d9f044a, type: 2}
+=======
   - {fileID: 0}
+>>>>>>> .r12
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -423,7 +447,13 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
+<<<<<<< .mine
+  - {fileID: 2100000, guid: 0e1afd7a0b460c74c8dbe4d129b48da1, type: 2}
+||||||| .r11
+  - {fileID: 2100000, guid: af8935f46ac1d7c4b826c31ee6e39637, type: 2}
+=======
   - {fileID: 0}
+>>>>>>> .r12
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -474,6 +504,17 @@ Rigidbody:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
+<<<<<<< .mine
+  m_GameObject: {fileID: 1572404058212078}
+  m_Mesh: {fileID: 4300000, guid: cf0bfb1c7d3e73745af3449ac0785602, type: 3}
+--- !u!81 &81457205058848066
+AudioListener:
+||||||| .r11
+  m_GameObject: {fileID: 1572404058212078}
+  m_Mesh: {fileID: 4300000, guid: bf113c2080a3a594293000a29561ef29, type: 3}
+--- !u!81 &81457205058848066
+AudioListener:
+=======
   m_GameObject: {fileID: 1447728911352810}
   serializedVersion: 2
   m_Mass: 50
@@ -486,6 +527,7 @@ Rigidbody:
   m_CollisionDetection: 0
 --- !u!65 &65769604624358038
 BoxCollider:
+>>>>>>> .r12
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
