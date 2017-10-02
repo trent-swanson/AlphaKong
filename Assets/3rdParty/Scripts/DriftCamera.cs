@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using XboxCtrlrInput;
 
 public class DriftCamera : MonoBehaviour
 {
@@ -15,20 +16,20 @@ public class DriftCamera : MonoBehaviour
 
     public float smoothing = 6f;
     // The cameras position. The camera sits here.
-    public Transform positionTarget;
+    public Transform cameraPoint;
     // The pivot the camera looks at and rotates around. This is so that the camera is always centered around the car.
-    public Transform pivotTarget;
+    public Transform cameraPivot;
     // The point the camera looks at.
     // Technically, the camera object will LookAt() the pivotTarget which will then LookAt() the lookAtTarget().
-    // Should switch between the frontOfCar and the centreOfMap.
+    // Should switch between the carFront and the mapCentre.
     [HideInInspector]
     public Transform lookAtTarget;
     // The front of the car. This exists so that the camera can use this point as a default LookAt() target. 
     // By default the camera looks here.
-    public Transform frontOfCar;
+    public Transform carFront;
     // The centre of the map. The camera can be toggled to look at this.
     // This causes the pivotTarget to LookAt() the centre of the map.
-    public Transform centreOfMap;
+    public Transform mapCentre;
     //// If the player wants to look at the side of their car they can.
     //// The camera will shift its position and rotation to match this transform.
     //public Transform sideView;
@@ -36,12 +37,19 @@ public class DriftCamera : MonoBehaviour
     public AdvancedOptions advancedOptions;
 
     //bool m_ShowingRightSideView;
-    bool showingCentreView = false;
+    bool showingCentreView = true;
+
+    // Smoothly transitions from normal view to centre view. The smoothing causes the camera to lag behind the player though.
+    void TransitionCamera(Transform a_target)
+    {
+        transform.position = Vector3.Lerp(transform.position, a_target.position, Time.deltaTime * smoothing);
+        transform.rotation = Quaternion.Slerp(transform.rotation, a_target.rotation, Time.deltaTime * smoothing);
+    }
 
     void Start()
     {
-        // rotates the camera towards the pivot point.
-        positionTarget.LookAt(pivotTarget);
+        // rotates the cameraPoint towards the pivot point.
+        cameraPoint.LookAt(cameraPivot);
     }
 
     private void FixedUpdate()
@@ -56,6 +64,10 @@ public class DriftCamera : MonoBehaviour
         //    m_ShowingRightSideView = !m_ShowingRightSideView;
         if (Input.GetKeyDown(advancedOptions.switchCentreViewKey))
             showingCentreView = !showingCentreView;
+
+        if (XCI.GetButtonDown(XboxButton.Y))
+            showingCentreView = !showingCentreView;
+
 
         if (advancedOptions.updateCameraInUpdate)
             UpdateCamera();
@@ -77,25 +89,22 @@ public class DriftCamera : MonoBehaviour
         if (showingCentreView)
         {
             //// Puts the camera next to the car, showing its side.
-            //transform.position = Vector3.Lerp(transform.position, centreOfMap.position, Time.deltaTime * smoothing);
-            //transform.rotation = Quaternion.Slerp(transform.rotation, centreOfMap.rotation, Time.deltaTime * smoothing);
+            //transform.position = Vector3.Lerp(transform.position, mapCentre.position, Time.deltaTime * smoothing);
+            //transform.rotation = Quaternion.Slerp(transform.rotation, mapCentre.rotation, Time.deltaTime * smoothing);
 
-            // puts the camera in the right place.
-            transform.position = Vector3.Lerp(transform.position, positionTarget.position, Time.deltaTime * smoothing);
-            transform.rotation = Quaternion.Slerp(transform.rotation, positionTarget.rotation, Time.deltaTime * smoothing);
+            // rotates cameraPivot to look at the centre of the map.
+            cameraPivot.transform.LookAt(mapCentre);
 
-            // rotates pivotTarget to look at the centre of the map.
-            pivotTarget.transform.LookAt(centreOfMap);
+            TransitionCamera(cameraPoint);
+             
+ 
         }
         else
         {
+            // rotates cameraPivot to look at the front of the car.
+            cameraPivot.transform.LookAt(carFront);
 
-            // puts the camera in the right place.
-            transform.position = Vector3.Lerp(transform.position, positionTarget.position, Time.deltaTime * smoothing);
-            transform.rotation = Quaternion.Slerp(transform.rotation, positionTarget.rotation, Time.deltaTime * smoothing);
-
-            // rotates pivotTarget to look at the front of the car.
-            pivotTarget.transform.LookAt(frontOfCar);
+            TransitionCamera(cameraPoint);
         }
     }
 }
